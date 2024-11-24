@@ -12,6 +12,10 @@ class DouyinConfig(object):
         aid = self.parser.get('params', 'aid')
         return sec_user_id, aid
 
+    def get_aid(self):
+        aid = self.parser.get('params', 'aid')
+        return aid
+
     def get_cookie(self):
         cookie = self.parser.get('headers', 'cookie')
         return cookie
@@ -19,5 +23,8 @@ class DouyinConfig(object):
     def get_followings_url(self):
         return self.parser.get('urls', 'fellow_url')
 
-    def get_aweme_url(self):
-        return self.parser.get('urls', 'aweme_url')
+    def get_opus_url(self):
+        return self.parser.get('urls', 'opus_url')
+
+    def get_play_url(self):
+        return self.parser.get('urls', 'play_url')
