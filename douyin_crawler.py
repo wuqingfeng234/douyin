@@ -1,15 +1,27 @@
 import requests
 import json
 
+from douyin_config import DouyinConfig
+
 
 class DouyinCrawler:
-    def __init__(self):
-        self.header = None
+    _DOUYIN_HOST = 'www.douyin.com'
 
-    def get_fellow(self):
-        fellow_url = 'https://www.douyin.com/aweme/v1/web/im/spotlight/relation/'
-        req = requests.get(url=fellow_url, verify=False)
-        pass
+    def __init__(self):
+        self.config = DouyinConfig()
+
+    def get_followings(self):
+        followings_url = self.config.get_followings_url()
+        cookie = self.config.get_cookie()
+        headers = {'cookie': cookie}
+        sec_user_id, aid = self.config.get_params()
+        params = {'aid': aid, 'sec_user_id': sec_user_id}
+        response = requests.get(url=followings_url, headers=headers, params=params)
+        if response.status_code == 200:
+            print(response.content)
+            return json.loads(response.text).get('followings')
+        else:
+            print("get_fellow error, detail is {} .".format(response))
 
     def get_opus(self):
         pass
@@ -26,3 +38,6 @@ class DouyinCrawler:
         except Exception as e:
             print("下载失败")
             print(e)
+
+    def _build_header(self):
+        pass

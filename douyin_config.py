@@ -4,7 +4,7 @@ import os
 
 class DouyinConfig(object):
     def __init__(self):
-        self.parser = configparser.ConfigParser()
+        self.parser = configparser.RawConfigParser()
         self.parser.read(os.path.join(os.getcwd(), 'douyin_config.ini'), 'utf-8-sig')
 
     def get_params(self):
@@ -12,7 +12,12 @@ class DouyinConfig(object):
         aid = self.parser.get('params', 'aid')
         return sec_user_id, aid
 
-    def get_headers(self):
-        host = self.parser.get('headers', 'host')
+    def get_cookie(self):
         cookie = self.parser.get('headers', 'cookie')
-        return host, cookie
+        return cookie
+
+    def get_followings_url(self):
+        return self.parser.get('urls', 'fellow_url')
+
+    def get_aweme_url(self):
+        return self.parser.get('urls', 'aweme_url')
