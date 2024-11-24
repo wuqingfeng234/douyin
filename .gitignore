@@ -1,3 +1,4 @@
 .idea
 venv
 __pycache__
+douyin_config.ini
