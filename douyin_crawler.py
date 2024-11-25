@@ -24,19 +24,35 @@ class DouyinCrawler:
         else:
             print("get_fellow error, status is {} ,code is {} .".format(response.status_code, response.text))
 
-    def get_opus(self, user_name, user_id):
-        os.mkdir(user_name)
+    def get_opus(self, user_name, user_id, max_cursor):
+        if not os.path.exists(user_name):
+            os.mkdir(user_name)
         opus_url = self.config.get_opus_url()
         cookie = self.config.get_cookie()
         headers = {'Host': self.__DOUYIN_HOST, 'cookie': cookie}
         aid = self.config.get_aid()
-        params = {'aid': aid, 'sec_user_id': user_id, 'count': 18}
+        params = {'aid': aid, 'sec_user_id': user_id, 'count': 18, 'max_cursor': max_cursor}
         response = requests.get(url=opus_url, headers=headers, params=params)
         if response.status_code == 200:
             print(response.text)
-            return json.loads(response.text).get('aweme_list')
+            return json.loads(response.text)
         else:
             print("get_fellow error, status is {} ,code is {} .".format(response.status_code, response.text))
+
+    def get_user_opus(self, user_name, user_id):
+        opus = []
+        r = self.get_opus(user_name, user_id, 0)
+        aweme_list = r.get('aweme_list')
+        opus.extend(aweme_list)
+        max_cursor = r.get('max_cursor')
+        request_item_cursor = r.get('request_item_cursor')
+        time_list = r.get('time_list')
+        while (aweme_list != None and len(aweme_list) > 0):
+            r = self.get_opus(user_name, user_id, max_cursor)
+            aweme_list = r.get('aweme_list')
+            opus.extend(aweme_list)
+            max_cursor = r.get('max_cursor')
+        return opus
 
     def download_video(self, video_id, download_cookie, desc):
         play_url = self.config.get_play_url()
@@ -49,10 +65,18 @@ class DouyinCrawler:
             headers = {'Host': 'v18-daily-coldb.douyinvod.com'}
             response = requests.get(real_url[0], headers=headers)
             if response.status_code == 200:
-                with open(desc + '.mp4', 'wb') as f:
+                with open(desc + video_id + '.mp4', 'wb') as f:
                     f.write(response.content)
             else:
                 print("get_fellow error, status is {} ,code is {} .".format(response.status_code, response.text))
 
-    def _build_header(self):
-        pass
+    def down_target_user(self, user_name, user_id):
+        opus = self.get_user_opus(user_name, user_id)
+        for o in opus:
+            video_id = o.get('aweme_id')
+            desc = o.get('desc')
+
+    def down_fwllowings(self):
+        fellowings = self.get_followings()
+        for fellowing in fellowings:
+            print(fellowing)
