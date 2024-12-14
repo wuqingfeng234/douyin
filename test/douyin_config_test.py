@@ -4,8 +4,7 @@ from douyin_config import DouyinConfig
 
 
 class MyTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, True)  # add assertion here
+
 
     def test_get_params(self):
         douyin_config = DouyinConfig()

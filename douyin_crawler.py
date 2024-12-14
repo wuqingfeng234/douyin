@@ -12,19 +12,22 @@ class DouyinCrawler:
         self.__DOUYIN_HOST = 'www.douyin.com'
         self.config = DouyinConfig()
 
-    def get_followings(self):
+    def get_followings_info(self):
         followings_url = self.config.get_followings_url()
         cookie = self.config.get_cookie()
-        headers = {'cookie': cookie}
-        sec_user_id, aid = self.config.get_params()
-        params = {'aid': aid, 'sec_user_id': sec_user_id}
-        response = requests.get(url=followings_url, headers=headers, params=params)
-        if response.status_code == 200:
+        headers = {'cookie': cookie
+            ,
+                   'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+                   }
+        response = requests.get(url=followings_url, headers=headers)
+        print(response.request.url)
+        print(response.request.headers)
+        if response.status_code == 200 and json.loads(response.text).get('status_code') == 0:
             return json.loads(response.text).get('followings')
         else:
             print("get_fellow error, status is {} ,code is {} .".format(response.status_code, response.text))
 
-    def get_opus(self, user_name, user_id, max_cursor):
+    def get_user_opus_info(self, user_name, user_id, max_cursor):
         if not os.path.exists(user_name):
             os.mkdir(user_name)
         opus_url = self.config.get_opus_url()
@@ -39,27 +42,32 @@ class DouyinCrawler:
         else:
             print("get_fellow error, status is {} ,code is {} .".format(response.status_code, response.text))
 
-    def get_user_opus(self, user_name, user_id):
+    def get_user_opus_infos(self, user_name, user_id):
         opus = []
-        r = self.get_opus(user_name, user_id, 0)
+        r = self.get_user_opus_info(user_name, user_id, 0)
         aweme_list = r.get('aweme_list')
         opus.extend(aweme_list)
         max_cursor = r.get('max_cursor')
         request_item_cursor = r.get('request_item_cursor')
         time_list = r.get('time_list')
         while (aweme_list != None and len(aweme_list) > 0):
-            r = self.get_opus(user_name, user_id, max_cursor)
+            r = self.get_user_opus_info(user_name, user_id, max_cursor)
             aweme_list = r.get('aweme_list')
             opus.extend(aweme_list)
             max_cursor = r.get('max_cursor')
         return opus
 
-    def download_video(self, video_id, download_cookie, desc):
+
+    def download_video(self, video_id, desc):
         play_url = self.config.get_play_url()
+        download_cookie = self.config.get_cookie()
         headers = {'Host': self.__DOUYIN_HOST, 'cookie': download_cookie}
         params = {'video_id': video_id}
         response = requests.get(play_url, headers=headers, params=params, allow_redirects=False)
-        if response.status_code == 302:
+        if response.status_code == 200 and len(response.content) > 10:
+            with open(desc + video_id + '.mp4', 'wb') as f:
+                f.write(response.content)
+        elif response.status_code == 302:
             htmldata = etree.HTML(response.content)
             real_url = htmldata.xpath('//a/@href')
             headers = {'Host': 'v18-daily-coldb.douyinvod.com'}
@@ -68,15 +76,18 @@ class DouyinCrawler:
                 with open(desc + video_id + '.mp4', 'wb') as f:
                     f.write(response.content)
             else:
-                print("get_fellow error, status is {} ,code is {} .".format(response.status_code, response.text))
+                print("download video error, status is {} ,code is {} .".format(response.status_code, response.text))
+        else:
+            print("download video error, status is {} ,code is {} .".format(response.status_code, response.text))
 
-    def down_target_user(self, user_name, user_id):
-        opus = self.get_user_opus(user_name, user_id)
+    def down_target_user_video(self, user_name, user_id):
+        opus = self.get_user_opus_infos(user_name, user_id)
         for o in opus:
             video_id = o.get('aweme_id')
             desc = o.get('desc')
+            self.download_video(video_id, desc)
 
-    def down_fwllowings(self):
-        fellowings = self.get_followings()
+    def down_fellowings_video(self):
+        fellowings = self.get_followings_info()
         for fellowing in fellowings:
             print(fellowing)
