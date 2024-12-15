@@ -35,7 +35,7 @@ class DouyinCrawlerTest(unittest.TestCase):
         crawler = DouyinCrawler()
         video_id = 'v0200fg10000ct1cdfnog65p3378l60g'
         desc = '#天生丽质 #极品身材 #叶凯薇'
-        crawler.download_video(video_id, desc)
+        crawler.download_video('test',video_id, desc)
 
     def test_down_target_user(self):
         crawler = DouyinCrawler()
