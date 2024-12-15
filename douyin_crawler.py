@@ -1,4 +1,5 @@
 import os
+from urllib.parse import urlparse
 
 import requests
 import json
@@ -57,11 +58,13 @@ class DouyinCrawler:
             max_cursor = r.get('max_cursor')
         return opus
 
-
     def download_video(self, video_id, desc):
         play_url = self.config.get_play_url()
         download_cookie = self.config.get_cookie()
-        headers = {'Host': self.__DOUYIN_HOST, 'cookie': download_cookie}
+        headers = {'Host': self.__DOUYIN_HOST,
+                   'cookie': download_cookie,
+                   'Accept-Encoding': 'gzip, deflate',
+                   'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'}
         params = {'video_id': video_id}
         response = requests.get(play_url, headers=headers, params=params, allow_redirects=False)
         if response.status_code == 200 and len(response.content) > 10:
@@ -69,9 +72,18 @@ class DouyinCrawler:
                 f.write(response.content)
         elif response.status_code == 302:
             htmldata = etree.HTML(response.content)
-            real_url = htmldata.xpath('//a/@href')
-            headers = {'Host': 'v18-daily-coldb.douyinvod.com'}
-            response = requests.get(real_url[0], headers=headers)
+            real_url = htmldata.xpath('//a/@href')[0]
+            o = urlparse(real_url)
+            headers = {'Host': o.hostname,
+                       'Accept': '*/*',
+                       'Connection': 'keep-alive',
+                       'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+                       }
+            response = requests.get(real_url, headers=headers)
+            print(response.request.url)
+            print(response.request.headers)
+            print(response.request.path_url)
+            print(response.request.body)
             if response.status_code == 200:
                 with open(desc + video_id + '.mp4', 'wb') as f:
                     f.write(response.content)
@@ -83,7 +95,8 @@ class DouyinCrawler:
     def down_target_user_video(self, user_name, user_id):
         opus = self.get_user_opus_infos(user_name, user_id)
         for o in opus:
-            video_id = o.get('aweme_id')
+            video_id = o.get("video").get("play_addr").get("uri")
+            url = o.get("video").get("play_addr").get("url_list")[0]
             desc = o.get('desc')
             self.download_video(video_id, desc)
 
