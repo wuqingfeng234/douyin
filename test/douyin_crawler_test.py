@@ -45,6 +45,10 @@ class DouyinCrawlerTest(unittest.TestCase):
         crawler = DouyinCrawler()
         crawler.down_target_user_video('你的灵儿吖', 'MS4wLjABAAAAhKlSnJS5yJ0QCuAQyjAHpxJbeEXYh3DJZQZnfXFoxDg')
 
+    def test_down_target_user3(self):
+        crawler = DouyinCrawler()
+        crawler.down_target_user_video('秀妍日记', 'MS4wLjABAAAA4VP2he5sG54xDhNVu2FYETjZYhaupAQmVa8wT96mD0Q')
+
     def test_down_fellowings_video(self):
         crawler = DouyinCrawler()
         crawler.down_fellowings_video('MS4wLjABAAAAl_9zTWpxneEZC3Tn0hKbczqHNM3IZ_io7yUgepTIbgY')
