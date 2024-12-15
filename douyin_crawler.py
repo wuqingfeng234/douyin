@@ -119,7 +119,7 @@ class DouyinCrawler:
                         datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id, e))
                     sleep(2 * random.random())
             else:
-                print("video {} exsited .".format(video_id))
+                print("video {} exsited ,will not down load any more .".format(video_id))
 
     def down_fellowings_video(self, user_id):
         fellowings = self.get_followings_info(user_id)
