@@ -1,3 +1,4 @@
+import datetime
 import os
 import random
 from time import sleep
@@ -18,7 +19,7 @@ class DouyinCrawler:
         self.config = DouyinConfig()
         self.file_checker = FileChecker()
 
-    def get_followings_info(self):
+    def get_followings_info(self, user_id):
         followings_url = self.config.get_followings_url()
         cookie = self.config.get_cookie()
         headers = {'cookie': cookie
@@ -29,7 +30,9 @@ class DouyinCrawler:
         if response.status_code == 200 and json.loads(response.text).get('status_code') == 0:
             return json.loads(response.text).get('followings')
         else:
-            print("get_fellow error, status is {} ,code is {} .".format(response.status_code, response.text))
+            print("{} get_fellow error, status is {} ,code is {} .".format(
+                datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
+                response.text))
 
     def get_user_opus_info(self, user_name, user_id, max_cursor):
         if not os.path.exists(user_name):
@@ -43,10 +46,11 @@ class DouyinCrawler:
         if response.status_code == 200:
             return json.loads(response.text)
         else:
-            print("get_fellow error, status is {} ,code is {} .".format(response.status_code, response.text))
+            print("{} get_fellow error, status is {} ,code is {} .".format(
+                datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
+                response.text))
 
     def get_user_opus_infos(self, user_name, user_id):
-        print()
         opus = []
         r = self.get_user_opus_info(user_name, user_id, 0)
         aweme_list = r.get('aweme_list')
@@ -86,14 +90,21 @@ class DouyinCrawler:
             if response.status_code == 200:
                 with open(user_name + "/" + desc + video_id + '.mp4', 'wb') as f:
                     f.write(response.content)
-                print("down load video {} successfully .".format(video_id))
+                print("{} down load video {} successfully .".format(
+                    datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id))
                 self.file_checker.set_exsited_video(video_id)
             else:
-                print("download video error, status is {} ,code is {} .".format(response.status_code, response.text))
-                print("down load video {} failed .".format(video_id))
+                print("{} download video error, status is {} ,code is {} .".format(
+                    datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
+                    response.text))
+                print("{} down load video {} failed .".format(
+                    datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id))
         else:
-            print("download video error, status is {} ,code is {} .".format(response.status_code, response.text))
-            print("down load video {} failed .".format(video_id))
+            print("{} download video error, status is {} ,code is {} .".format(
+                datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
+                response.text))
+            print("{} down load video {} failed .".format(
+                datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id))
 
     def down_target_user_video(self, user_name, user_id):
         opus = self.get_user_opus_infos(user_name, user_id)
@@ -104,12 +115,16 @@ class DouyinCrawler:
                 try:
                     self.download_video(user_name, video_id, desc)
                 except Exception as e:
-                    print("down load video error ,video_id is {} ,exception is {}".format(video_id, e))
+                    print("{} down load video error ,video_id is {} ,exception is {}".format(
+                        datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id, e))
                     sleep(2 * random.random())
             else:
                 print("video {} exsited .".format(video_id))
 
-    def down_fellowings_video(self):
-        fellowings = self.get_followings_info()
+    def down_fellowings_video(self, user_id):
+        fellowings = self.get_followings_info(user_id)
         for fellowing in fellowings:
-            print(fellowing)
+            name = fellowing.get('nickname')
+            user_id = fellowing.get('sec_uid')
+            if not self.file_checker.is_people_exclude(user_id):
+                self.down_target_user_video(name, user_id)

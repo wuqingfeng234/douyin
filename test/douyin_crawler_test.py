@@ -8,7 +8,7 @@ class DouyinCrawlerTest(unittest.TestCase):
 
     def test_get_followings(self):
         crawler = DouyinCrawler()
-        fellowings = crawler.get_followings_info()
+        fellowings = crawler.get_followings_info('MS4wLjABAAAAl_9zTWpxneEZC3Tn0hKbczqHNM3IZ_io7yUgepTIbgY')
         print(fellowings)
 
     def test_get_usrtopus(self):
@@ -35,7 +35,7 @@ class DouyinCrawlerTest(unittest.TestCase):
         crawler = DouyinCrawler()
         video_id = 'v0200fg10000ct1cdfnog65p3378l60g'
         desc = '#天生丽质 #极品身材 #叶凯薇'
-        crawler.download_video('test',video_id, desc)
+        crawler.download_video('test', video_id, desc)
 
     def test_down_target_user(self):
         crawler = DouyinCrawler()
@@ -44,6 +44,10 @@ class DouyinCrawlerTest(unittest.TestCase):
     def test_down_target_user2(self):
         crawler = DouyinCrawler()
         crawler.down_target_user_video('你的灵儿吖', 'MS4wLjABAAAAhKlSnJS5yJ0QCuAQyjAHpxJbeEXYh3DJZQZnfXFoxDg')
+
+    def test_down_fellowings_video(self):
+        crawler = DouyinCrawler()
+        crawler.down_fellowings_video('MS4wLjABAAAAl_9zTWpxneEZC3Tn0hKbczqHNM3IZ_io7yUgepTIbgY')
 
 
 if __name__ == '__main__':
