@@ -41,6 +41,10 @@ class DouyinCrawlerTest(unittest.TestCase):
         crawler = DouyinCrawler()
         crawler.down_target_user_video('青春热舞', 'MS4wLjABAAAAl_9zTWpxneEZC3Tn0hKbczqHNM3IZ_io7yUgepTIbgY')
 
+    def test_down_target_user2(self):
+        crawler = DouyinCrawler()
+        crawler.down_target_user_video('你的灵儿吖', 'MS4wLjABAAAAhKlSnJS5yJ0QCuAQyjAHpxJbeEXYh3DJZQZnfXFoxDg')
+
 
 if __name__ == '__main__':
     unittest.main()
