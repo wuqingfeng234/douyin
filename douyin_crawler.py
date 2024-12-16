@@ -90,21 +90,24 @@ class DouyinCrawler:
             if response.status_code == 200:
                 with open(user_name + "/" + desc + video_id + '.mp4', 'wb') as f:
                     f.write(response.content)
-                print("{} down load video {} successfully .".format(
-                    datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id))
+                print("{} down load video from user {},video name {} ,video id {}  successfully .".format(
+                    datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
+                    video_id))
                 self.file_checker.set_exsited_video(video_id)
             else:
                 print("{} download video error, status is {} ,code is {} .".format(
                     datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
                     response.text))
-                print("{} down load video {} failed .".format(
-                    datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id))
+                print("{} down load video from user {},video name {} ,video id {}  failed .".format(
+                    datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
+                    video_id))
         else:
             print("{} download video error, status is {} ,code is {} .".format(
                 datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
                 response.text))
-            print("{} down load video {} failed .".format(
-                datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id))
+            print("{} down load video from user {},video name {} ,video id {}  failed .".format(
+                datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
+                video_id))
 
     def down_target_user_video(self, user_name, user_id):
         opus = self.get_user_opus_infos(user_name, user_id)
@@ -115,8 +118,9 @@ class DouyinCrawler:
                 try:
                     self.download_video(user_name, video_id, desc)
                 except Exception as e:
-                    print("{} down load video error ,video_id is {} ,exception is {}".format(
-                        datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id, e))
+                    print("{} down load video from user {},video name {} ,video id {}  error ,except is {} .".format(
+                        datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
+                        video_id, e))
                     sleep(2 * random.random())
             else:
                 print("video {} exsited ,will not down load any more .".format(video_id))
