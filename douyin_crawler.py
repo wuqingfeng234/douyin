@@ -28,6 +28,8 @@ class DouyinCrawler:
                    }
         response = requests.get(url=followings_url, headers=headers)
         if response.status_code == 200 and json.loads(response.text).get('status_code') == 0:
+            with open("../data/fellowing.json", "w", encoding='utf-8') as of:
+                of.writelines(response.text)
             return json.loads(response.text).get('followings')
         else:
             print("{} get_fellow error, status is {} ,code is {} .".format(
