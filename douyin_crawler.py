@@ -1,6 +1,7 @@
 import datetime
 import os
 import random
+import sys
 from time import sleep
 from urllib.parse import urlparse
 
@@ -76,8 +77,9 @@ class DouyinCrawler:
                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'}
         params = {'video_id': video_id}
         response = requests.get(play_url, headers=headers, params=params, allow_redirects=False)
+        path = os.path.join(os.getcwd(), "video", user_name, desc + video_id + '.mp4')
         if response.status_code == 200 and len(response.content) > 10:
-            with open(desc + video_id + '.mp4', 'wb') as f:
+            with open(path, 'wb') as f:
                 f.write(response.content)
         elif response.status_code == 302:
             htmldata = etree.HTML(response.content)
@@ -90,7 +92,7 @@ class DouyinCrawler:
                        }
             response = requests.get(real_url, headers=headers)
             if response.status_code == 200:
-                with open(user_name + "/" + desc + video_id + '.mp4', 'wb') as f:
+                with open(path, 'wb') as f:
                     f.write(response.content)
                 print("{} down load video from user {},video name {} ,video id {}  successfully .".format(
                     datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
