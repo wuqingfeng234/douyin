@@ -38,8 +38,6 @@ class DouyinCrawler:
                 response.text))
 
     def get_user_opus_info(self, user_name, user_id, max_cursor):
-        if not os.path.exists(user_name):
-            os.mkdir(user_name)
         opus_url = self.config.get_opus_url()
         cookie = self.config.get_cookie()
         headers = {'Host': self.__DOUYIN_HOST, 'cookie': cookie}
