@@ -59,6 +59,9 @@ class DouyinCrawler:
         max_cursor = r.get('max_cursor')
         request_item_cursor = r.get('request_item_cursor')
         time_list = r.get('time_list')
+        folder_path = os.path.join(os.getcwd(), "video", user_name)
+        if not os.path.exists(folder_path):
+            os.mkdir(folder_path)
         while aweme_list is not None and len(aweme_list) > 0:
             r = self.get_user_opus_info(user_name, user_id, max_cursor)
             aweme_list = r.get('aweme_list')
@@ -125,7 +128,10 @@ class DouyinCrawler:
                         video_id, e))
                     sleep(2 * random.random())
             else:
-                print("video {} exsited ,will not down load any more .".format(video_id))
+                print(
+                    "{} video {} from user {} exsited ,will not down load any more .".format(
+                        datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id,
+                        user_name))
 
     def down_fellowings_video(self, user_id):
         fellowings = self.get_followings_info(user_id)

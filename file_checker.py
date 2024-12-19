@@ -24,7 +24,7 @@ class FileChecker:
     def set_exsited_video(self, video_id):
         exsited_file = 'record.txt'
         with open(exsited_file, "a", encoding='utf-8') as of:
-            of.writelines(video_id)
+            of.writelines(video_id + '\n')
         self.__exsit_video.append(video_id)
 
     def is_video_exsits(self, video_id):
@@ -32,3 +32,25 @@ class FileChecker:
 
     def is_people_exclude(self, user_id):
         return user_id in self.__exclude_people
+
+
+def cut(obj, sec):
+    return [obj[i:i + sec] for i in range(0, len(obj), sec)]
+
+
+if __name__ == '__main__':
+    exsited_file = 'record.txt'
+    lx = []
+    with open(exsited_file, "r", encoding='utf-8') as of:
+        ls = of.readlines()
+        for l in ls:
+            if (len(l) == 33):
+                lx.append(l)
+            else:
+                xx = cut(l, 32)
+                for x in xx:
+                    lx.append(x + '\n')
+    with open("x.txt", 'w', encoding='utf-8') as o:
+        for l in lx:
+            o.write(l)
+        print()
