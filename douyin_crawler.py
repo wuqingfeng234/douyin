@@ -1,7 +1,7 @@
 import datetime
 import os
 import random
-import sys
+import logging
 from time import sleep
 from urllib.parse import urlparse
 
@@ -47,7 +47,7 @@ class DouyinCrawler:
         if response.status_code == 200:
             return json.loads(response.text)
         else:
-            print("{} get_fellow error, status is {} ,code is {} .".format(
+            logging.error("{} get_fellow error, status is {} ,code is {} .".format(
                 datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
                 response.text))
 
@@ -95,22 +95,22 @@ class DouyinCrawler:
             if response.status_code == 200:
                 with open(path, 'wb') as f:
                     f.write(response.content)
-                print("{} down load video from user {},video name {} ,video id {}  successfully .".format(
+                logging.info("{} down load video from user {},video name {} ,video id {}  successfully .".format(
                     datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
                     video_id))
                 self.file_checker.set_exsited_video(video_id)
             else:
-                print("{} download video error, status is {} ,code is {} .".format(
+                logging.error("{} download video error, status is {} ,code is {} .".format(
                     datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
                     response.text))
-                print("{} down load video from user {},video name {} ,video id {}  failed .".format(
+                logging.error("{} down load video from user {},video name {} ,video id {}  failed .".format(
                     datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
                     video_id))
         else:
-            print("{} download video error, status is {} ,code is {} .".format(
+            logging.error("{} download video error, status is {} ,code is {} .".format(
                 datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), response.status_code,
                 response.text))
-            print("{} down load video from user {},video name {} ,video id {}  failed .".format(
+            logging.error("{} down load video from user {},video name {} ,video id {}  failed .".format(
                 datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
                 video_id))
 
@@ -123,12 +123,12 @@ class DouyinCrawler:
                 try:
                     self.download_video(user_name, video_id, desc)
                 except Exception as e:
-                    print("{} down load video from user {},video name {} ,video id {}  error ,except is {} .".format(
+                    logging.error("{} down load video from user {},video name {} ,video id {}  error ,except is {} .".format(
                         datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), user_name, desc,
                         video_id, e))
                     sleep(2 * random.random())
             else:
-                print(
+                logging.info(
                     "{} video {} from user {} exsited ,will not down load any more .".format(
                         datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S'), video_id,
                         user_name))

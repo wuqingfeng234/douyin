@@ -43,11 +43,11 @@ class DouyinCrawlerTest(unittest.TestCase):
 
     def test_down_target_user2(self):
         crawler = DouyinCrawler()
-        crawler.down_target_user_video('你的灵儿吖', 'MS4wLjABAAAAhKlSnJS5yJ0QCuAQyjAHpxJbeEXYh3DJZQZnfXFoxDg')
+        crawler.down_target_user_video('加剪成片—搞笑', 'MS4wLjABAAAAIXQrzqKnvMt2iNo5VOp5cgRNmJ-NRf7wOGkCY6PeVZ3G13arsmwJu_X68RxbP0MV')
 
     def test_down_target_user3(self):
         crawler = DouyinCrawler()
-        crawler.down_target_user_video('秀妍日记', 'MS4wLjABAAAA4VP2he5sG54xDhNVu2FYETjZYhaupAQmVa8wT96mD0Q')
+        crawler.down_target_user_video('搞笑班长', 'MS4wLjABAAAASND0sLuUtbUHL0HRy-YuAbfhr8cLYxrJskuzhyCarLk')
 
     def test_down_fellowings_video(self):
         crawler = DouyinCrawler()

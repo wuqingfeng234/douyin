@@ -53,4 +53,3 @@ if __name__ == '__main__':
     with open("x.txt", 'w', encoding='utf-8') as o:
         for l in lx:
             o.write(l)
-        print()
